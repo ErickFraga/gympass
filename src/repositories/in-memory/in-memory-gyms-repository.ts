@@ -31,12 +31,12 @@ export class InMemoryGymsRepository implements GymsRepository {
     return gym
   }
 
-  async searchMany(title: string, page: number = 1) {
+  async searchMany(query: string, page: number = 1) {
     const PAGE_SIZE = 20
     const PAGE_START = (page - 1) * PAGE_SIZE
     const PAGE_END = page * PAGE_SIZE
 
-    return this.items.filter(item => item.title.includes(title)).slice(PAGE_START, PAGE_END)
+    return this.items.filter(item => item.title.includes(query)).slice(PAGE_START, PAGE_END)
   }
 
   async findManyNearby(params: FindManyNearbyParams) {
