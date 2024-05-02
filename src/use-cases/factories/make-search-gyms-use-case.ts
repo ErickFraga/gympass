@@ -6,4 +6,4 @@ export function makeSearchGymUseCase() {
   const useCase = new SearchGymUseCase(gymsRepository)
 
   return useCase;
-} k
+}

@@ -25,7 +25,8 @@ export class PrismaGymsRepository implements GymsRepository {
     const gyms = prisma.gym.findMany({
       where: {
         title: {
-          contains: query
+          contains: query,
+          mode: 'insensitive'
         }
       },
       take: PAGE_SIZE,
@@ -33,11 +34,14 @@ export class PrismaGymsRepository implements GymsRepository {
     })
     return gyms
   }
+
   async findManyNearby({ latitude, longitude }: FindManyNearbyParams) {
-    const gyms = prisma.$queryRaw<Gym[]>`
-    SELECT * FROM gyms
-    WHERE ( 6371 * acos( cos( radians(${latitude}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin( radians( latitude ) ) ) ) <= 10
-    `
+    const gyms = await prisma.$queryRaw<Gym[]>`
+      SELECT * FROM gyms
+      WHERE ${latitude} = latitude AND ${longitude} = longitude
+      OR ( 6371 * acos( cos( radians(${latitude}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin( radians( latitude ) ) ) ) <= 10
+  `
+
     return gyms
   }
 
